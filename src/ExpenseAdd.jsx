@@ -10,6 +10,7 @@ import {
 import { useDispatch } from "react-redux";
 import { expense, income } from "./components/ExpenseSlice";
 import { nanoid } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 export const ExpenseAdd = () => {
   const [amount, setAmount] = useState("");
@@ -19,25 +20,34 @@ export const ExpenseAdd = () => {
 
   const clickHandler = (e) => {
     e.preventDefault();
-    if (typeExp === "expense") {
+    if (amount.trim() !== "" && spent.trim() !== "" && typeExp === "expense") {
       dispatch(
         expense({ id: nanoid(), amount: -parseFloat(amount), spent: spent })
       );
-    } else if (typeExp === "income") {
+    } else if (
+      amount.trim() !== "" &&
+      spent.trim() !== "" &&
+      typeExp === "income"
+    ) {
       dispatch(
         income({ id: nanoid(), amount: parseFloat(amount), spent: spent })
       );
+      toast(`${typeExp} added successfully`);
     }
     setAmount("");
     setSpent("");
-    setTypeExp('Selector');
+    setTypeExp("Selector");
   };
 
   return (
     <Container>
-      <Form onSubmit={clickHandler} style={{alignItems:'center'}} className="my-2">
+      <Form
+        onSubmit={clickHandler}
+        style={{ alignItems: "center" }}
+        className="my-2"
+      >
         <Row className="g-2">
-          <Col md >
+          <Col md>
             <FloatingLabel controlId="floatingInputGrid" label="Enter Text....">
               <Form.Control
                 value={spent}
@@ -60,7 +70,7 @@ export const ExpenseAdd = () => {
               />
             </FloatingLabel>
           </Col>
-          <Col md >
+          <Col md>
             <FloatingLabel
               controlId="floatingSelectGrid"
               label="Type of expense"
@@ -77,14 +87,9 @@ export const ExpenseAdd = () => {
             </FloatingLabel>
           </Col>
           <Col sm>
-            <Button
-              type="submit"
-              variant="outline-secondary"
-              className="mt-2"
-            >
+            <Button type="submit" variant="outline-secondary" className="mt-2">
               Submit
             </Button>
-
           </Col>
         </Row>
       </Form>
